@@ -39,6 +39,5 @@ public class Eto : MonoBehaviour
     public void ChangeEtoImage(Sprite changeSprite) // 干支のイメージを引数で受け取る
     {
         imgEto.sprite = changeSprite; // 干支のイメージを変更
-        Debug.Log(changeSprite);
     }
 }
