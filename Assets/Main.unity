@@ -139,6 +139,10 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 999287956816269054, guid: 3e326c7e73555b643ab2be72d212440b, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4924288454267728350, guid: 3e326c7e73555b643ab2be72d212440b, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -169,11 +173,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7526908355847485964, guid: 3e326c7e73555b643ab2be72d212440b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 50
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7526908355847485964, guid: 3e326c7e73555b643ab2be72d212440b, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 50
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7526908355847485964, guid: 3e326c7e73555b643ab2be72d212440b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1238,11 +1242,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7526908355847485964, guid: 3e326c7e73555b643ab2be72d212440b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 80
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7526908355847485964, guid: 3e326c7e73555b643ab2be72d212440b, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 80
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7526908355847485964, guid: 3e326c7e73555b643ab2be72d212440b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1342,16 +1346,6 @@ MonoBehaviour:
   etoList: []
   etoSprites:
   - {fileID: 21300000, guid: 3ba779523b54604438113e840e3cecef, type: 3}
-  - {fileID: 21300000, guid: 90019648c3249ce4b8a771d0d1830cf0, type: 3}
-  - {fileID: 21300000, guid: 12cbd1aee0006ca42a8d9169dfe1c323, type: 3}
-  - {fileID: 21300000, guid: 5243cc3f1668a9c459b2472dd4ccd681, type: 3}
-  - {fileID: 21300000, guid: 90019648c3249ce4b8a771d0d1830cf0, type: 3}
-  - {fileID: 21300000, guid: 90019648c3249ce4b8a771d0d1830cf0, type: 3}
-  - {fileID: 21300000, guid: 90019648c3249ce4b8a771d0d1830cf0, type: 3}
-  - {fileID: 21300000, guid: 90019648c3249ce4b8a771d0d1830cf0, type: 3}
-  - {fileID: 21300000, guid: 90019648c3249ce4b8a771d0d1830cf0, type: 3}
-  - {fileID: 21300000, guid: 90019648c3249ce4b8a771d0d1830cf0, type: 3}
-  - {fileID: 21300000, guid: 90019648c3249ce4b8a771d0d1830cf0, type: 3}
   - {fileID: 21300000, guid: 90019648c3249ce4b8a771d0d1830cf0, type: 3}
   eraseEtoList: []
   linkCount: 0
