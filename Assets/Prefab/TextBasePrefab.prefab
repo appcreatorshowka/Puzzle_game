@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1150940706399803505}
   - component: {fileID: 764556030202138996}
   m_Layer: 5
-  m_Name: TextScore
+  m_Name: TextBasePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
