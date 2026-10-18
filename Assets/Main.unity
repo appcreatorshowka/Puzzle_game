@@ -1367,7 +1367,7 @@ PrefabInstance:
     - target: {fileID: 4924288454267728350, guid: 3e326c7e73555b643ab2be72d212440b, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: cbfbafb4426d5f547a87d4774354c980, type: 3}
+      objectReference: {fileID: 21300000, guid: cf9cd92cb4752f142b58509778836ef0, type: 3}
     - target: {fileID: 7526908355847485964, guid: 3e326c7e73555b643ab2be72d212440b, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2009,7 +2009,7 @@ MonoBehaviour:
   etoSprites:
   - {fileID: 21300000, guid: 3ba779523b54604438113e840e3cecef, type: 3}
   - {fileID: 21300000, guid: be06f85e8a3bb4c4fb66ef5026628e69, type: 3}
-  - {fileID: 21300000, guid: cbfbafb4426d5f547a87d4774354c980, type: 3}
+  - {fileID: 21300000, guid: cf9cd92cb4752f142b58509778836ef0, type: 3}
   - {fileID: 21300000, guid: caf0a58e27f981b4d9c036d53fd05fde, type: 3}
   - {fileID: 21300000, guid: a8b6c0c276d70ec40a8e48073c0b7804, type: 3}
   - {fileID: 21300000, guid: 27aec412ba96cf34eb00b510d624594c, type: 3}
