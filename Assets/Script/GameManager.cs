@@ -1,7 +1,8 @@
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.InputSystem;
+using static GameManager;
 
 public class GameManager : MonoBehaviour
 {
@@ -49,6 +50,20 @@ public class GameManager : MonoBehaviour
 
     private float timer;        // 残り時間計測用
 
+    /// <summary>
+    /// ゲームの進行状況
+    /// </summary>
+    public enum GameState
+    {
+        Select,     // 干支の選択中
+        Ready,      // ゲームの準備中
+        Play,       // ゲームのプレイ中
+        Result      // リザルト中
+    }
+
+    [Header("現在のゲームの進行状況")]
+    public GameState gameState = GameState.Select;
+
     IEnumerator Start()
     {   // <=  ☆　戻り値を void から IEnumerator型に変更して、コルーチンメソッドにする
 
@@ -60,6 +75,10 @@ public class GameManager : MonoBehaviour
 
         // 残り時間の表示
         uiManager.UpdateDisplayGameTime(GameData.instance.gameTime);
+
+        // gameStateを準備中に変更
+        gameState = GameState.Ready;
+
     }
 
     /// <summary>
@@ -80,6 +99,7 @@ public class GameManager : MonoBehaviour
         }
 
         yield break;
+
     }
 
 
@@ -112,10 +132,24 @@ public class GameManager : MonoBehaviour
 
             // 0.03秒待って次の干支を生成
             yield return new WaitForSeconds(0.03f);
+
         }
+
+        // gameStateが準備中のときだけゲームプレイ中に変更
+        if (gameState == GameState.Ready)
+        {
+            gameState = GameState.Play;
+        }
+
     }
     void Update()
     {
+
+        // ゲームのプレイ中以外のgameStateでは処理を行わない
+        if (gameState != GameState.Play)
+        {
+            return;
+        }
 
         Debug.Log(Pointer.current);
 
@@ -161,13 +195,18 @@ public class GameManager : MonoBehaviour
                 //0で止める
                 GameData.instance.gameTime = 0;
 
+                // ゲーム終了を追加する　　TODOの処理を実装します
+                StartCoroutine(GameUp());
+
                 // TODO ゲーム終了を追加する
                 Debug.Log("ゲーム終了");
             }
 
             // 残り時間の表示更新
             uiManager.UpdateDisplayGameTime(GameData.instance.gameTime);
+
         }
+
     }
 
     private void OnStartDrag()
@@ -431,5 +470,19 @@ public class GameManager : MonoBehaviour
 
         // スコア加算と画面の更新処理
         uiManager.UpdateDisplayScore();
+    }
+
+    /// ゲーム終了処理
+    /// </summary>
+    private IEnumerator GameUp()
+    {
+
+        // gameStateをリザルトに変更する = Updateメソッドが動かなくなる
+        gameState = GameState.Result;
+
+        yield return new WaitForSeconds(1.5f);
+
+        // TODO リザルトの処理を実装する
+        Debug.Log("リザルトのポップアップを移動させます");
     }
 }
