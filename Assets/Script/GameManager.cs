@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using DG.Tweening;
 using static GameManager;
 
 public class GameManager : MonoBehaviour
@@ -63,6 +64,9 @@ public class GameManager : MonoBehaviour
 
     [Header("現在のゲームの進行状況")]
     public GameState gameState = GameState.Select;
+
+    [SerializeField]
+    private ResultPopUp resultPopUp;　　　　　// 型を GameObject から ResultPopUp に変更する
 
     IEnumerator Start()
     {   // <=  ☆　戻り値を void から IEnumerator型に変更して、コルーチンメソッドにする
@@ -484,5 +488,26 @@ public class GameManager : MonoBehaviour
 
         // TODO リザルトの処理を実装する
         Debug.Log("リザルトのポップアップを移動させます");
+
+        // TODO 処理を実装します
+        yield return StartCoroutine(MoveResultPopUp());
     }
+
+    /// <summary>
+    /// リザルドポップアップを画面内に移動
+    /// </summary>
+    /// <returns></returns> 
+    private IEnumerator MoveResultPopUp()
+    {
+        // DoTweenの機能を使って、ResultPopUpゲームオブジェクトを画面外から画面内に移動させる
+        resultPopUp.transform.DOMoveY(0, 1.0f).SetEase(Ease.Linear)
+                .OnComplete(() => {
+                    // リザルト表示(スコアと消した干支の数を渡す)　TODOを実装します
+                    resultPopUp.DisplayResult(GameData.instance.score, GameData.instance.eraseEtoCount);
+                }
+       );
+
+        yield return new WaitForSeconds(1.0f);
+    }
+
 }
