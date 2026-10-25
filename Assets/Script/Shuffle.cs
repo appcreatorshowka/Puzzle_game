@@ -23,6 +23,8 @@ public class Shuffle : MonoBehaviour
     /// <param name="uiManager"></param>
     public void SetUpShuffle(UIManager uiManager)
     {
+        Debug.Log("SetUpShuffle呼ばれた");
+
         this.uiManager = uiManager;
 
         capsuleCol = GetComponent<CapsuleCollider2D>();
@@ -30,6 +32,13 @@ public class Shuffle : MonoBehaviour
         // シャッフル用のコライダーをオフにしておく
         capsuleCol.enabled = false;
 
+    }
+
+    private void Awake() // 20261025追加処理（ドロップが落ちてこなくなったため）
+    {
+        capsuleCol = GetComponent<CapsuleCollider2D>();
+
+        Debug.Log(capsuleCol);
     }
 
     /// <summary>
@@ -61,7 +70,7 @@ public class Shuffle : MonoBehaviour
         capsuleCol.enabled = false;
 
         // 再度シャッフルボタンを押せるようにする
-        //uiManager.ActivateShuffleButton(true);　　　//　コメントアウトしておきます
+        uiManager.ActivateShuffleButton(true);　　　
     }
 
     /// <summary>
