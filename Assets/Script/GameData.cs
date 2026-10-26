@@ -29,6 +29,9 @@ public class GameData : MonoBehaviour
     [Header("現在のゲームの残り時間")]
     public float gameTime;
 
+    [Header("選択中のスキル")]
+    public SkillType selectedSkillType;
+
     void Awake() // MonoBehaviourのAwakeメソッドは、スクリプトが有効化されたときに最初に呼び出される
     {
         if (instance == null) // まだインスタンスが存在しない場合
