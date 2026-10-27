@@ -32,6 +32,26 @@ public class GameData : MonoBehaviour
     [Header("選択中のスキル")]
     public SkillType selectedSkillType;
 
+    /// <summary>
+    /// 干支の基本情報
+    /// </summary>
+    [System.Serializable]
+    public class EtoData
+    {
+        public EtoType etoType;
+        public Sprite sprite;
+
+        // コンストラクタ(インスタンス(new)時に用意している引数への値の代入を強制するメソッド)
+        public EtoData(EtoType etoType, Sprite sprite)
+        {
+            this.etoType = etoType;
+            this.sprite = sprite;
+        }
+    }
+
+    [Header("干支12種類のリスト")]
+    public List<EtoData> etoDataList = new List<EtoData>();
+
     void Awake() // MonoBehaviourのAwakeメソッドは、スクリプトが有効化されたときに最初に呼び出される
     {
         if (instance == null) // まだインスタンスが存在しない場合
@@ -78,4 +98,27 @@ public class GameData : MonoBehaviour
         InitGame();
     }
 
+    /// <summary>
+    /// 干支データのリストを作成
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator InitEtoDataList()
+    {
+        // 干支の画像を読みこむための変数を配列で用意(GameManagerの宣言フィールドで用意していたものを、このメソッド内のみで使用するように変更)
+        Sprite[] etoSprites = new Sprite[(int)EtoType.Count];
+
+        // Resources.LoadAllを行い、分割されている干支の画像を順番にすべて読み込んで配列に代入
+        etoSprites = Resources.LoadAll<Sprite>("Sprites/eto");
+
+        // ゲームに登場する12種類の干支データを作成
+        for (int i = 0; i < (int)EtoType.Count; i++)
+        {
+            // 干支の情報を扱うクラス EtoData をインスタンス(new EtoData())し、コンストラクタを使って値を代入
+            EtoData etoData = new EtoData((EtoType)i, etoSprites[i]);
+
+            // 干支データをListへ追加
+            etoDataList.Add(etoData);
+        }
+        yield break;
+    }
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using DG.Tweening;
 using static GameManager;
+using System.Linq;                
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
@@ -25,8 +27,11 @@ public class GameManager : MonoBehaviour
     [SerializeField, Header("生成された干支のリスト")]
     private List<Eto> etoList = new List<Eto>();
 
-    [SerializeField, Header("干支の画像データ")]
-    private Sprite[] etoSprites;
+    // [SerializeField, Header("干支の画像データ")]
+    // private Sprite[] etoSprites;
+
+    [SerializeField, Header("今回のゲームで生成する干支の種類")]
+    private List<GameData.EtoData> selectedEtoDataList = new List<GameData.EtoData>();
 
     // 最初にドラッグした干支の情報
     private Eto firstSelectEto;
@@ -72,27 +77,47 @@ public class GameManager : MonoBehaviour
     {   // <=  ☆　戻り値を void から IEnumerator型に変更して、コルーチンメソッドにする
 
         // 干支の画像を読みこむ。この処理が終了するまで、次の処理へはいかないようにする
-        yield return StartCoroutine(LoadEtoSprites());
+        // yield return StartCoroutine(LoadEtoSprites());
+        // ここに用意していたLoadEtoSpritesメソッドの呼び出しは削除します。 →　これのこと？
 
-        // 引数で指定した数の干支を生成する
-        StartCoroutine(CreateEtos(GameData.instance.createEtoCount));
-
-        // 残り時間の表示
-        uiManager.UpdateDisplayGameTime(GameData.instance.gameTime);
 
         // gameStateを準備中に変更
         gameState = GameState.Ready;
 
+        // 干支データのリストが作成されてなければ
+        if (GameData.instance.etoDataList.Count == 0)
+        {
+            // 干支データのリストを作成。この処理が終了するまで、次の処理へはいかないようにする
+            yield return StartCoroutine(GameData.instance.InitEtoDataList());
+        }
+
+        // 今回のゲームに登場する干支をランダムで選択。この処理が終了するまで、次の処理へはいかないようにする
+        yield return StartCoroutine(SetUpEtoTypes(GameData.instance.etoTypeCount));
+
+        // 残り時間の表示
+        uiManager.UpdateDisplayGameTime(GameData.instance.gameTime);
+
+        // 引数で指定した数の干支を生成する
+        StartCoroutine(CreateEtos(GameData.instance.createEtoCount));
+
         // UIManagerの初期設定
         yield return StartCoroutine(uiManager.Initialize());
 
+
+    }
+
+    public IEnumerator PreparateGame()
+    {
+
+        // GameDataのselectedSkillTypeを渡して、スキルボタンに登録するメソッド(スキル実行時の処理)を設定
+        yield return StartCoroutine(SetUpSkill(GameData.instance.selectedSkillType));
     }
 
     /// <summary>
     /// 干支の画像を読み込んで配列から使用できるようにする
     /// </summary>
-    private IEnumerator LoadEtoSprites()
-    {
+    // private IEnumerator LoadEtoSprites()
+    // {
         // 配列の初期化(12個の画像が入るようにSprite型の配列を12個用意する)
         // etoSprites = new Sprite[(int)EtoType.Count];
 
@@ -100,13 +125,44 @@ public class GameManager : MonoBehaviour
         // etoSprites = Resources.LoadAll<Sprite>("Sprites/eto");
 
         // ※　１つのファイルを１２分割していない場合には、以下の処理を使います。12分割している場合には使用しません。
-        for (int i = 0; i < etoSprites.Length; i++) // 12種類の干支の画像を順番に読み込む
-        {
+        // for (int i = 0; i < etoSprites.Length; i++) // 12種類の干支の画像を順番に読み込む
+        // {
             //    etoSprites[i] = Resources.Load<Sprite>("Sprites/eto_" + i); // 画像の名前が「eto_0」「eto_1」・・・「eto_11」となっている場合
+        // }
+
+        // yield break;
+
+    // }
+
+    /// <summary>
+    /// ゲームに登場させる干支の種類を設定する
+    /// </summary>
+    /// <param name="typeCount">生成する干支の種類数</param>
+    /// <returns></returns>
+    private IEnumerator SetUpEtoTypes(int typeCount)
+    {
+
+        // 新しくリストを用意して初期化に合わせてetoDataListを複製して、干支の候補リストとする
+        List<GameData.EtoData> candidateEtoDataList = new List<GameData.EtoData>(GameData.instance.etoDataList);
+
+        // 干支を指定数だけをランダムに選ぶ(干支の種類は重複させない)
+        while (typeCount > 0)
+        {
+
+            // ランダムに数字を選ぶ
+            int randomValue = Random.Range(0, candidateEtoDataList.Count);
+
+            // 今回のゲームに生成する干支リストに追加
+            selectedEtoDataList.Add(candidateEtoDataList[randomValue]);
+
+            // 干支のリストから選択された干支の情報を削除(干支を重複させないため)
+            candidateEtoDataList.Remove(candidateEtoDataList[randomValue]);
+
+            // 選択した数を減らす
+            typeCount--;
+
+            yield return null;
         }
-
-        yield break;
-
     }
 
 
@@ -131,11 +187,11 @@ public class GameManager : MonoBehaviour
             // 生成位置をランダムにして落下位置を変化させる
             eto.transform.localPosition = new Vector2(Random.Range(-maxRange, maxRange), fallPos);
 
-            // ランダムな干支を12種類の中から１つ選択
-            int randomValue = Random.Range(0, etoSprites.Length);
+            // 今回のゲームに登場する干支の中から、ランダムな干支を１つ選択
+            int randomValue = Random.Range(0, selectedEtoDataList.Count);　// 　←　第2引数を変えます。
 
-            // 生成された干支の初期設定(干支の種類と干支の画像を引数を使ってEtoへ渡す)
-            eto.SetUpEto((EtoType)randomValue, etoSprites[randomValue]);
+            // 干支の初期設定
+            eto.SetUpEto(selectedEtoDataList[randomValue].etoType, selectedEtoDataList[randomValue].sprite);
 
             // etoListに追加
             etoList.Add(eto);
@@ -439,6 +495,9 @@ public class GameManager : MonoBehaviour
             // スコアと消した干支の数の加算
             AddScores(currentEtoType, eraseEtoList.Count);
 
+            // スキルポイント加算
+            uiManager.AddSkillPoint(eraseEtoList.Count);
+
             // 消した干支の数だけ新しい干支をランダムに生成
             StartCoroutine(CreateEtos(eraseEtoList.Count));
         }
@@ -490,7 +549,10 @@ public class GameManager : MonoBehaviour
     private IEnumerator GameUp()
     {
         // シャッフルボタンを非活性化して押せなくする
-        uiManager.ActivateShuffleButton(false);
+        // uiManager.ActivateShuffleButton(false);
+
+        // シャッフルボタンとスキルボタンを非活性化して押せなくする
+        uiManager.InActiveButtons();
 
         // gameStateをリザルトに変更する = Updateメソッドが動かなくなる
         gameState = GameState.Result;
@@ -521,4 +583,85 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
     }
 
+    /// <summary>
+    /// 最も数の多い干支のタイプをまとめて削除する
+    /// </summary>
+    public void DeleteMaxEtoType()
+    {
+
+        // Dictionaryの宣言と定義。干支のタイプとその数を代入できるようにする
+        Dictionary<EtoType, int> dictionary = new Dictionary<EtoType, int>();
+
+        // リストの中から干支のタイプごとにDictionaryの要素を作成(ここで５つの干支タイプごとにいくつ数があるかわかる)
+        foreach (Eto eto in etoList)
+        {
+            if (dictionary.ContainsKey(eto.etoType))
+            {
+                // すでにある要素(干支のタイプ)の場合には数のカウントを加算
+                dictionary[eto.etoType]++;
+            }
+            else
+            {
+                // まだ作られていない要素(干支のタイプ)の場合には新しく要素を作り、カウントを１する
+                dictionary.Add(eto.etoType, 1);
+            }
+        }
+
+        // Debug
+        foreach (KeyValuePair<EtoType, int> keyValuePair in dictionary)
+        {
+            Debug.Log("干支 : " + keyValuePair.Key + " 数 : " + keyValuePair.Value);
+        }
+
+        // Dictionaryを検索し、最も数の多い干支のタイプを見つけて、消す干支のタイプと数を決定
+        EtoType maxEtoType = dictionary.OrderByDescending(x => x.Value).First().Key;
+        int removeNum = dictionary.OrderByDescending(x => x.Value).First().Value;
+
+        Debug.Log("消す干支のタイプ : " + maxEtoType + " 数 : " + removeNum);
+
+        // 対象の干支を破壊
+        for (int i = 0; i < etoList.Count; i++)
+        {
+            if (etoList[i].etoType == maxEtoType)
+            {
+                Destroy(etoList[i].gameObject);
+            }
+        }
+
+        // etoListから対象の干支を削除
+        etoList.RemoveAll(x => x.etoType == maxEtoType);
+
+        // 点数と消した干支の加算
+        AddScores(maxEtoType, removeNum);
+
+        // 破壊した干支の数だけ干支を生成
+        StartCoroutine(CreateEtos(removeNum));
+    }
+
+    /// <summary>
+    /// 選択されたスキルをボタンに登録
+    /// </summary>
+    /// <param name="skillType"></param>
+    /// <returns></returns>
+    private IEnumerator SetUpSkill(SkillType skillType)
+    {
+        yield return StartCoroutine(uiManager.SetUpSkillButton(GetSkill(skillType)));
+    }
+
+    /// <summary>
+    /// スキルボタンに登録するスキルのメソッドを取得して戻す
+    /// </summary>
+    /// <param name="chooseSkillType"></param>
+    /// <returns></returns>
+    public UnityAction GetSkill(SkillType chooseSkillType)
+    {
+        switch (chooseSkillType)
+        {
+            case SkillType.DeleteMaxEtoType:
+                return DeleteMaxEtoType;
+
+                // TODO スキルが増えた場合には追加する
+        }
+        return null;
+    }
 }
