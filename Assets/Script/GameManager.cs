@@ -84,6 +84,9 @@ public class GameManager : MonoBehaviour
         // gameStateを準備中に変更
         gameState = GameState.Ready;
 
+        // UIManagerの初期設定
+        yield return StartCoroutine(uiManager.Initialize());
+
         // 干支データのリストが作成されてなければ
         if (GameData.instance.etoDataList.Count == 0)
         {
@@ -100,8 +103,6 @@ public class GameManager : MonoBehaviour
         // 引数で指定した数の干支を生成する
         StartCoroutine(CreateEtos(GameData.instance.createEtoCount));
 
-        // UIManagerの初期設定
-        yield return StartCoroutine(uiManager.Initialize());
 
 
     }

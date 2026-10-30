@@ -2864,6 +2864,17 @@ MonoBehaviour:
   initTime: 60
   gameTime: 0
   selectedSkillType: 0
+  etoDataList:
+  - etoType: 0
+    sprite: {fileID: 21300000, guid: caf0a58e27f981b4d9c036d53fd05fde, type: 3}
+  - etoType: 1
+    sprite: {fileID: 21300000, guid: 3ba779523b54604438113e840e3cecef, type: 3}
+  - etoType: 2
+    sprite: {fileID: 21300000, guid: a8b6c0c276d70ec40a8e48073c0b7804, type: 3}
+  - etoType: 3
+    sprite: {fileID: 21300000, guid: be06f85e8a3bb4c4fb66ef5026628e69, type: 3}
+  - etoType: 4
+    sprite: {fileID: 21300000, guid: cf9cd92cb4752f142b58509778836ef0, type: 3}
 --- !u!1 &1477358512
 GameObject:
   m_ObjectHideFlags: 0
@@ -3631,12 +3642,7 @@ MonoBehaviour:
   maxRange: 500
   fallPos: 1000
   etoList: []
-  etoSprites:
-  - {fileID: 21300000, guid: 3ba779523b54604438113e840e3cecef, type: 3}
-  - {fileID: 21300000, guid: be06f85e8a3bb4c4fb66ef5026628e69, type: 3}
-  - {fileID: 21300000, guid: cf9cd92cb4752f142b58509778836ef0, type: 3}
-  - {fileID: 21300000, guid: caf0a58e27f981b4d9c036d53fd05fde, type: 3}
-  - {fileID: 21300000, guid: a8b6c0c276d70ec40a8e48073c0b7804, type: 3}
+  selectedEtoDataList: []
   eraseEtoList: []
   linkCount: 0
   etoDistance: 1
