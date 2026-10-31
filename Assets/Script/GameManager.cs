@@ -113,8 +113,20 @@ public class GameManager : MonoBehaviour
     public IEnumerator PreparateGame()
     {
 
+        // ステートを準備中に変更
+        gameState = GameState.Ready;
+
+        // 残り時間の表示
+        uiManager.UpdateDisplayGameTime(GameData.instance.gameTime);
+
+        // ゲームに登場させる干支の種類を設定
+        yield return StartCoroutine(SetUpEtoTypes(GameData.instance.etoTypeCount));
+
         // GameDataのselectedSkillTypeを渡して、スキルボタンに登録するメソッド(スキル実行時の処理)を設定
         yield return StartCoroutine(SetUpSkill(GameData.instance.selectedSkillType));
+
+        // 引数で指定した数の干支を生成
+        StartCoroutine(CreateEtos(GameData.instance.createEtoCount));
     }
 
     /// <summary>
@@ -583,7 +595,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator MoveResultPopUp()
     {
         // DoTweenの機能を使って、ResultPopUpゲームオブジェクトを画面外から画面内に移動させる
-        resultPopUp.transform.DOMoveY(0, 1.0f).SetEase(Ease.Linear)
+        resultPopUp.transform.DOMoveY(1, 1.0f).SetEase(Ease.Linear)
                 .OnComplete(() => {
                     // リザルト表示(スコアと消した干支の数を渡す)　TODOを実装します
                     resultPopUp.DisplayResult(GameData.instance.score, GameData.instance.eraseEtoCount);
