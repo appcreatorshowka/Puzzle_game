@@ -52,6 +52,12 @@ public class GameData : MonoBehaviour
     [Header("干支12種類のリスト")]
     public List<EtoData> etoDataList = new List<EtoData>();
 
+    [Header("選択している干支")]
+    public EtoData selectedEtoData;
+
+    [Header("選択している干支を消した時のスコア倍率")]
+    public float etoRate = 3;
+
     void Awake() // MonoBehaviourのAwakeメソッドは、スクリプトが有効化されたときに最初に呼び出される
     {
         if (instance == null) // まだインスタンスが存在しない場合
@@ -65,14 +71,14 @@ public class GameData : MonoBehaviour
         }
 
         // ゲームの初期化
-        InitGame();
+        // InitGame();
 
     }
 
     /// <summary>
     /// ゲーム初期化
     /// </summary>
-    private void InitGame()
+    public void InitGame() // privateからpublicに変更。GameManagerから呼び出すため
     {
         score = 0;
         eraseEtoCount = 0;
@@ -95,7 +101,7 @@ public class GameData : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
         // 初期化 GameDataゲームオブジェクトはシーン遷移しても破棄されない設定になっていますので、ここで再度、初期化の処理を行う必要があります。
-        InitGame();
+        // InitGame();
     }
 
     /// <summary>

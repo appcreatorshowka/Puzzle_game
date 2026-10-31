@@ -76,6 +76,9 @@ public class GameManager : MonoBehaviour
     [SerializeField, Header("干支の削除演出エフェクトのプレファブ")]
     private GameObject eraseEffectPrefab;
 
+    [SerializeField]
+    private EtoSelectPopUp etoSelectPopUp;    // EtoSelectPopUpを扱うため
+
     IEnumerator Start()
     {   // <=  ☆　戻り値を void から IEnumerator型に変更して、コルーチンメソッドにする
 
@@ -83,9 +86,14 @@ public class GameManager : MonoBehaviour
         // yield return StartCoroutine(LoadEtoSprites());
         // ここに用意していたLoadEtoSpritesメソッドの呼び出しは削除します。 →　これのこと？
 
-
         // gameStateを準備中に変更
-        gameState = GameState.Ready;
+        // gameState = GameState.Ready;
+
+        // スコアなどを初期化
+        GameData.instance.InitGame();
+
+        // ステートを干支選択中に変更
+        gameState = GameState.Select;    // <=  前のGameState.Readyから変える
 
         // UIManagerの初期設定
         yield return StartCoroutine(uiManager.Initialize());
@@ -97,14 +105,17 @@ public class GameManager : MonoBehaviour
             yield return StartCoroutine(GameData.instance.InitEtoDataList());
         }
 
+        // 干支の選択ポップアップに干支選択ボタンを生成。この処理が終了するまで、次の処理へはいかないようにする
+        yield return StartCoroutine(etoSelectPopUp.CreateEtoButtons(this));
+
         // 今回のゲームに登場する干支をランダムで選択。この処理が終了するまで、次の処理へはいかないようにする
-        yield return StartCoroutine(SetUpEtoTypes(GameData.instance.etoTypeCount));
+        // yield return StartCoroutine(SetUpEtoTypes(GameData.instance.etoTypeCount));
 
         // 残り時間の表示
-        uiManager.UpdateDisplayGameTime(GameData.instance.gameTime);
+        // uiManager.UpdateDisplayGameTime(GameData.instance.gameTime);
 
         // 引数で指定した数の干支を生成する
-        StartCoroutine(CreateEtos(GameData.instance.createEtoCount));
+        // StartCoroutine(CreateEtos(GameData.instance.createEtoCount));
 
 
 
@@ -160,6 +171,12 @@ public class GameManager : MonoBehaviour
 
         // 新しくリストを用意して初期化に合わせてetoDataListを複製して、干支の候補リストとする
         List<GameData.EtoData> candidateEtoDataList = new List<GameData.EtoData>(GameData.instance.etoDataList);
+
+        // 選択中の干支を探して生成する干支のリストに追加
+        GameData.EtoData myEto = candidateEtoDataList.Find((x) => x.etoType == GameData.instance.selectedEtoData.etoType);
+        selectedEtoDataList.Add(myEto);
+        candidateEtoDataList.Remove(myEto);
+        typeCount--;
 
         // 干支を指定数だけをランダムに選ぶ(干支の種類は重複させない)
         while (typeCount > 0)
